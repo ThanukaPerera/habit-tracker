@@ -98,8 +98,9 @@ export async function toggleHabitLog(habitId: string, date: Date) {
     }
 }
 
-export async function getHabitsWithLogs(range: 'week' | 'month', currentDate: Date) {
-    console.log('getHabitsWithLogs started', { range, currentDate })
+export async function getHabitsWithLogs(range: 'week' | 'month', currentDateInput: Date | string) {
+    const currentDate = new Date(currentDateInput)
+    console.log('getHabitsWithLogs started', { range, currentDate: currentDate.toISOString() })
     try {
         const session = await auth()
         console.log('getHabitsWithLogs session:', session?.user?.id)
@@ -134,19 +135,26 @@ export async function getHabitsWithLogs(range: 'week' | 'month', currentDate: Da
 
         // Serialize dates to pass to client component safely
         const serializedHabits = habits.map(habit => ({
-            ...habit,
+            id: habit.id,
+            title: habit.title,
+            description: habit.description,
+            icon: habit.icon,
+            color: habit.color,
+            userId: habit.userId,
             createdAt: habit.createdAt.toISOString(),
             logs: habit.logs.map(log => ({
-                ...log,
-                date: log.date.toISOString() // Serialize date
+                id: log.id,
+                habitId: log.habitId,
+                date: log.date.toISOString(),
+                completed: log.completed
             }))
         }))
 
         console.log('getHabitsWithLogs success, count:', habits.length)
         return { success: true, habits: serializedHabits }
-    } catch (error) {
-        console.error('Failed to fetch habits CRITICAL:', error)
-        return { success: false, error: 'Failed to fetch habits' }
+    } catch (error: any) {
+        console.error('getHabitsWithLogs CRASH:', error)
+        return { success: false, error: error.message || 'Failed to fetch habits' }
     }
 }
 

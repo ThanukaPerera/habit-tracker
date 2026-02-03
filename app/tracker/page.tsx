@@ -34,7 +34,7 @@ function TrackerContent() {
         const fetchData = async () => {
             setLoading(true)
             const range = viewParam === 'stats' ? 'month' : viewParam
-            const res = await getHabitsWithLogs(range, date)
+            const res = await getHabitsWithLogs(range, date.toISOString())
             if (res.success) {
                 // Deserialize dates safely
                 const deserializedHabits = res.habits?.map((habit: any) => ({

@@ -10,8 +10,14 @@ export async function authenticate(
     formData: FormData,
 ) {
     try {
-        await signIn('credentials', formData)
-    } catch (error) {
+        console.log('Authenticating user...', formData.get('email'))
+        await signIn('credentials', {
+            email: formData.get('email'),
+            password: formData.get('password'),
+            redirectTo: '/tracker'
+        })
+        return undefined
+    } catch (error: any) {
         if (error instanceof AuthError) {
             switch (error.type) {
                 case 'CredentialsSignin':
@@ -20,6 +26,7 @@ export async function authenticate(
                     return 'Something went wrong.'
             }
         }
+        console.error('Authentication Error:', error)
         throw error
     }
 }
