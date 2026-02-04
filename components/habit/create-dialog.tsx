@@ -9,7 +9,7 @@ import { createHabit } from '@/app/actions/habit'
 import { toast } from 'sonner'
 import { Plus } from 'lucide-react'
 
-export function CreateHabitDialog() {
+export function CreateHabitDialog({ onUpdate }: { onUpdate?: () => void }) {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -27,6 +27,7 @@ export function CreateHabitDialog() {
 
             if (result.success) {
                 toast.success('Habit created successfully')
+                if (onUpdate) onUpdate()
                 setOpen(false)
             } else {
                 toast.error('Failed to create habit')

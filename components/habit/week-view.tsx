@@ -21,11 +21,13 @@ type HabitWithLogs = {
 export function WeekView({
     habits,
     currentDate,
-    onDateChange
+    onDateChange,
+    onUpdate
 }: {
     habits: HabitWithLogs[]
     currentDate: Date
     onDateChange: (date: Date) => void
+    onUpdate?: () => void
 }) {
     const startDate = startOfWeek(currentDate, { weekStartsOn: 1 }) // Monday start
     const weekDays = Array.from({ length: 7 }, (_, i) => addDays(startDate, i))
@@ -34,6 +36,7 @@ export function WeekView({
         try {
             await toggleHabitLog(habitId, date)
             toast.success('Habit updated')
+            if (onUpdate) onUpdate()
         } catch {
             toast.error('Failed to update habit')
         }
@@ -59,8 +62,8 @@ export function WeekView({
                 </div>
             </div>
 
-            <div className="border rounded-lg overflow-hidden">
-                <div className="grid grid-cols-[200px_repeat(7,1fr)] bg-muted/50 border-b">
+            <div className="border rounded-lg overflow-x-auto">
+                <div className="grid grid-cols-[280px_repeat(7,1fr)] min-w-[800px] bg-muted/50 border-b">
                     <div className="p-4 font-medium">Habit</div>
                     {weekDays.map(day => (
                         <div key={day.toString()} className="p-4 text-center font-medium border-l">
@@ -73,7 +76,7 @@ export function WeekView({
                 </div>
 
                 {habits.map(habit => (
-                    <div key={habit.id} className="grid grid-cols-[200px_repeat(7,1fr)] border-b last:border-0 hover:bg-muted/5">
+                    <div key={habit.id} className="grid grid-cols-[280px_repeat(7,1fr)] min-w-[800px] border-b last:border-0 hover:bg-muted/5">
                         <div className="p-4 font-medium flex items-center gap-2 group">
                             {/* Icon placeholder if we had dynamic icons */}
                             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs">
@@ -81,7 +84,7 @@ export function WeekView({
                             </div>
                             <span className="flex-1 truncate">{habit.title}</span>
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                <EditHabitDialog habit={habit} />
+                                <EditHabitDialog habit={habit} onUpdate={onUpdate} />
                             </div>
                         </div>
                         {weekDays.map(day => (

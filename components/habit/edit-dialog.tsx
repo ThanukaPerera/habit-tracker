@@ -9,7 +9,13 @@ import { updateHabit } from '@/app/actions/habit'
 import { toast } from 'sonner'
 import { Pencil } from 'lucide-react'
 
-export function EditHabitDialog({ habit }: { habit: { id: string, title: string, description?: string | null } }) {
+export function EditHabitDialog({
+    habit,
+    onUpdate
+}: {
+    habit: { id: string, title: string, description?: string | null },
+    onUpdate?: () => void
+}) {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -26,6 +32,7 @@ export function EditHabitDialog({ habit }: { habit: { id: string, title: string,
 
             if (result.success) {
                 toast.success('Habit updated successfully')
+                if (onUpdate) onUpdate()
                 setOpen(false)
             } else {
                 toast.error('Failed to update habit')

@@ -24,7 +24,7 @@ export async function createHabit(data: { title: string; description?: string; i
                 userId: session.user.id
             }
         })
-        revalidatePath('/tracker')
+        revalidatePath('/')
         return { success: true, habit }
     } catch (error) {
         console.error('Failed to create habit:', error)
@@ -46,7 +46,7 @@ export async function deleteHabit(habitId: string) {
         await prisma.habit.delete({
             where: { id: habitId }
         })
-        revalidatePath('/tracker')
+        revalidatePath('/')
         return { success: true }
     } catch (error) {
         console.error('Failed to delete habit:', error)
@@ -90,7 +90,7 @@ export async function toggleHabitLog(habitId: string, date: Date) {
                 }
             })
         }
-        revalidatePath('/tracker')
+        revalidatePath('/')
         return { success: true }
     } catch (error) {
         console.error('Failed to toggle habit log:', error)
@@ -175,7 +175,7 @@ export async function updateHabit(habitId: string, data: { title: string; descri
                 description: data.description
             }
         })
-        revalidatePath('/tracker')
+        revalidatePath('/')
         return { success: true, habit }
     } catch (error) {
         console.error('Failed to update habit:', error)
