@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense, useCallback } from "react";
+import { useState, useEffect, Suspense, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -35,11 +35,15 @@ function TrackerContent() {
   const searchParams = useSearchParams();
 
   // URL state
-  const viewParam =
-    (searchParams.get("view") as "week" | "month" | "stats") || "week";
-  const date = searchParams.get("date")
-    ? new Date(searchParams.get("date")!)
-    : new Date();
+  const viewParam = useMemo(() =>
+    (searchParams.get("view") as "week" | "month" | "stats") || "week",
+    [searchParams]
+  );
+
+  const date = useMemo(() => {
+    const d = searchParams.get("date");
+    return d ? new Date(d) : new Date();
+  }, [searchParams]);
 
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
